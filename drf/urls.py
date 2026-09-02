@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from incidencias.views import bienvenida, error_404
+from tienda_online.views import bienvenida, error_404
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +24,4 @@ urlpatterns = [
     path('404/', error_404, name='error_404'),
 ]
 
-handler404 = 'incidencias.views.error_404'
+handler404 = 'tienda_online.views.error_404'
