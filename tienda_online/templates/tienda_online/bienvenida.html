@@ -55,114 +55,53 @@
             <!-- Hero de Bienvenida -->
             <div class="text-center space-y-3 max-w-2xl mx-auto">
                 <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 border border-blue-200 text-blue-800 text-xs font-semibold">
+                    {% if servidor_activo %}
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Servidor Activo • Proyecto 8</span>
+                    <span>Servidor Activo • Proyecto {{ numero_proyecto }}</span>
+                    {% else %}
+                    <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                    <span>Servidor En Mantenimiento</span>
+                    {% endif %}
                 </div>
 
                 <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                    Bienvenido a la <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Tienda Online</span>
+                    Bienvenido a la <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ titulo }}</span>
                 </h1>
 
                 <p class="text-sm sm:text-base text-slate-600 max-w-lg mx-auto leading-relaxed">
-                    Sistema digital para la gestión de ventas, pedidos e inventario de comercio electrónico. Selecciona un módulo para comenzar.
+                    {{ descripcion }}
                 </p>
             </div>
 
-            <!-- Grid de 4 Módulos Principales -->
+            <!-- Grid Dinámico de Módulos (Estructura de Control for en Django) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
-                <!-- Tarjeta 1: Productos (Azul) -->
-                <div class="bg-white rounded-2xl p-6 border border-blue-100 shadow-md shadow-blue-500/5 hover:shadow-xl hover:border-blue-300 transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1">
+                {% for modulo in modulos %}
+                <div class="bg-white rounded-2xl p-6 border {{ modulo.borde_clase }} shadow-md shadow-blue-500/5 hover:shadow-xl transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1">
                     <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow-md shadow-blue-600/30 group-hover:scale-105 transition-transform">
-                            📦
+                        <div class="w-12 h-12 rounded-xl {{ modulo.color_clase }} text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-105 transition-transform">
+                            {{ modulo.icono }}
                         </div>
                         <div>
-                            <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                                Catálogo de Productos
+                            <h3 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                                {{ modulo.nombre }}
                             </h3>
                             <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-                                Administra el inventario, categorías, stock y precios de la tienda.
+                                {{ modulo.descripcion }}
                             </p>
                         </div>
                     </div>
                     <div class="mt-5">
-                        <a href="/404/" class="w-full inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm shadow-blue-600/20 hover:shadow-md transition-all">
-                            <span>Ver Catálogo</span>
+                        <a href="/404/" class="w-full inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white {{ modulo.color_clase }} {{ modulo.hover_clase }} shadow-sm transition-all">
+                            <span>Ingresar</span>
                             <span>→</span>
                         </a>
                     </div>
                 </div>
-
-                <!-- Tarjeta 2: Ventas y Pedidos (Verde) -->
-                <div class="bg-white rounded-2xl p-6 border border-emerald-100 shadow-md shadow-emerald-500/5 hover:shadow-xl hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1">
-                    <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-md shadow-emerald-600/30 group-hover:scale-105 transition-transform">
-                            🛒
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                                Ventas y Pedidos
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-                                Control de compras, seguimiento de estados y órdenes de clientes.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5">
-                        <a href="/404/" class="w-full inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm shadow-emerald-600/20 hover:shadow-md transition-all">
-                            <span>Ver Pedidos</span>
-                            <span>→</span>
-                        </a>
-                    </div>
+                {% empty %}
+                <div class="col-span-4 text-center py-8 text-slate-500">
+                    No hay módulos registrados actualmente.
                 </div>
-
-                <!-- Tarjeta 3: Clientes (Morado) -->
-                <div class="bg-white rounded-2xl p-6 border border-purple-100 shadow-md shadow-purple-500/5 hover:shadow-xl hover:border-purple-300 transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1">
-                    <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-purple-600 text-white flex items-center justify-center text-2xl shadow-md shadow-purple-600/30 group-hover:scale-105 transition-transform">
-                            👥
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-slate-900 group-hover:text-purple-600 transition-colors">
-                                Clientes & Usuarios
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-                                Registro de usuarios, perfiles de compradores y operadores.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5">
-                        <a href="/404/" class="w-full inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 shadow-sm shadow-purple-600/20 hover:shadow-md transition-all">
-                            <span>Ver Clientes</span>
-                            <span>→</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Tarjeta 4: Métricas (Ámbar) -->
-                <div class="bg-white rounded-2xl p-6 border border-amber-100 shadow-md shadow-amber-500/5 hover:shadow-xl hover:border-amber-300 transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1">
-                    <div class="space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center text-2xl shadow-md shadow-amber-500/30 group-hover:scale-105 transition-transform">
-                            📊
-                        </div>
-                        <div>
-                            <h3 class="text-base font-bold text-slate-900 group-hover:text-amber-600 transition-colors">
-                                Métricas & Reportes
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-                                Indicadores de gestión, tendencias de ventas y estadísticas.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5">
-                        <a href="/404/" class="w-full inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 shadow-sm shadow-amber-500/20 hover:shadow-md transition-all">
-                            <span>Ver Métricas</span>
-                            <span>→</span>
-                        </a>
-                    </div>
-                </div>
-
+                {% endfor %}
             </div>
 
             <!-- Etiquetas del Proyecto -->
@@ -173,6 +112,10 @@
                 <span>•</span>
                 <span class="px-3 py-1 bg-white rounded-lg border border-indigo-100 shadow-2xs font-mono text-indigo-700">
                     App: tienda_online
+                </span>
+                <span>•</span>
+                <span class="px-3 py-1 bg-white rounded-lg border border-indigo-100 shadow-2xs font-mono text-emerald-700 font-semibold">
+                    Módulos: {{ total_modulos }}
                 </span>
             </div>
 

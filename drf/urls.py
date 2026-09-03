@@ -15,13 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from tienda_online.views import bienvenida, error_404
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', bienvenida, name='bienvenida'),
-    path('404/', error_404, name='error_404'),
+    # Delegación de rutas hacia la aplicación tienda_online
+    path('', include('tienda_online.urls')),
 ]
 
+# Manejador global para el error 404 personalizado
 handler404 = 'tienda_online.views.error_404'
+

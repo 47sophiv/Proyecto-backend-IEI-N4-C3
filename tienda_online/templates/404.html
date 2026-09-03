@@ -63,11 +63,11 @@
                 </h1>
 
                 <h2 class="text-xl font-bold text-slate-900">
-                    ¡Página o Función no disponible!
+                    {{ mensaje_error|default:"¡Página o Función no disponible!" }}
                 </h2>
                 
                 <p class="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
-                    Esta función de la Tienda Online aún está en etapa de desarrollo o la ruta no existe. Puedes regresar a la vitrina principal.
+                    {{ descripcion_error|default:"Esta función de la Tienda Online aún está en etapa de desarrollo o la ruta no existe. Puedes regresar a la vitrina principal." }}
                 </p>
             </div>
 
