@@ -81,7 +81,7 @@ def bienvenida(request):
     return render(request, 'tienda_online/bienvenida.html', contexto)
 
 
-def error_404(request, exception=None):
+def error_404(request, exception=None, *args, **kwargs):
     """
     Vista personalizada para manejar errores HTTP 404 (Página no encontrada).
     Captura la excepción y retorna la plantilla 404.html con código de estado 404.

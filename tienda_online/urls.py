@@ -1,4 +1,4 @@
-﻿from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 # Espacio de nombres de la aplicacion
@@ -9,4 +9,7 @@ urlpatterns = [
     path('', views.bienvenida, name='bienvenida'),
     # Ruta directa para verificar la plantilla 404
     path('404/', views.error_404, name='error_404'),
+    # Ruta comodin (catch-all): captura cualquier ruta inexistente y muestra el 404 personalizado
+    re_path(r'^.*$', views.error_404, name='catch_all_404'),
 ]
+
