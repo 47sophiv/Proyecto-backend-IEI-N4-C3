@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-rse-91g&c45)54g+0-q3^_$9@#^dg-g30@*fyur_xo&wk7cg!m'
+# Desacoplamiento de datos sensibles con python-decouple
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-rse-91g&c45)54g+0-q3^_$9@#^dg-g30@*fyur_xo&wk7cg!m')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv())
 
 
 # Application definition
@@ -76,12 +76,12 @@ WSGI_APPLICATION = 'drf.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mi_tienda',
-        'USER': 'mi_tienda',
-        'PASSWORD': 'Tienda1',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.mysql'),
+        'NAME': config('DB_NAME', default='mi_tienda'),
+        'USER': config('DB_USER', default='mi_tienda'),
+        'PASSWORD': config('DB_PASSWORD', default='Tienda1'),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'PORT': config('DB_PORT', default='3306'),
         'OPTIONS': {
             'init_command': "SET default_storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
@@ -134,4 +134,21 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+
+
+# ==============================================================================
+# Configuración Global de Django REST Framework (Control de Fechas)
+# ==============================================================================
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+
+    # Formatos de entrada global aceptados por campos DateTimeFields
+    'DATETIME_INPUT_FORMATS': ['%d-%m-%Y %H:%M:%S', '%d-%m-%Y', 'iso-8601'],
+
+    # Formato de salida global para campos DateFields
+    'DATE_FORMAT': '%d-%m-%Y',
+
+    # Formatos de entrada global aceptados por campos DateFields
+    'DATE_INPUT_FORMATS': ['%d-%m-%Y'],
 }
