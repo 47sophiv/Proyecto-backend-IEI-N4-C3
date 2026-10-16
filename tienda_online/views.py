@@ -1,4 +1,13 @@
 from django.shortcuts import render
+from rest_framework import viewsets
+from .models import Categoria, Producto, Cliente, Pedido, DetallePedido
+from .serializer import (
+    CategoriaSerializer,
+    ProductoSerializer,
+    ClienteSerializer,
+    PedidoSerializer,
+    DetallePedidoSerializer,
+)
 
 def bienvenida(request):
     """
@@ -92,4 +101,48 @@ def error_404(request, exception=None, *args, **kwargs):
         'descripcion_error': 'Esta función de la Tienda Online aún está en etapa de desarrollo o la ruta no existe.',
     }
     return render(request, '404.html', contexto, status=404)
+
+
+# ==============================================================================
+# Vistas basadas en clases (CBV) con Django REST Framework (ModelViewSets)
+# ==============================================================================
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet que proporciona operaciones CRUD completas para el modelo Categoria.
+    """
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+
+
+class ProductoViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet que proporciona operaciones CRUD completas para el modelo Producto.
+    """
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+
+
+class ClienteViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet que proporciona operaciones CRUD completas para el modelo Cliente.
+    """
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
+
+
+class PedidoViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet que proporciona operaciones CRUD completas para el modelo Pedido.
+    """
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoSerializer
+
+
+class DetallePedidoViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet que proporciona operaciones CRUD completas para el modelo DetallePedido.
+    """
+    queryset = DetallePedido.objects.all()
+    serializer_class = DetallePedidoSerializer
 

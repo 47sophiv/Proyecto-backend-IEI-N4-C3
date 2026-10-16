@@ -1,4 +1,4 @@
-﻿# Tienda Online - Backend Django (Evaluación 1)
+# Tienda Online - Backend Django (Evaluación 1)
 
 Sistema backend desarrollado con **Python** y **Django** para la gestión de catálogo, pedidos, usuarios y métricas de una plataforma de comercio electrónico.
 
@@ -118,3 +118,72 @@ Una vez que el servidor esté en ejecución en `http://127.0.0.1:8000/`:
 | **asgiref** | Especificación estándar para compatibilidad asíncrona (ASGI) y manejo sincrónico/asincrónico. |
 | **sqlparse** | Motor de análisis y formateo de lenguaje SQL utilizado internamente por el ORM de Django. |
 | **tzdata** | Base de datos de zonas horarias para la gestión correcta de fechas y horas internacionales. |
+| **mysqlclient** | Conector nativo de alto rendimiento entre Python/Django y bases de datos MySQL. |
+| **SQLAlchemy** | ORM relacional avanzado para ejecución de consultas y mapeo objeto-relacional independiente. |
+
+---
+
+## 7. Manejo de Base de Datos (MySQL)
+
+### Configuración de Usuario y Privilegios en MySQL
+En la consola de MySQL o phpMyAdmin:
+```sql
+CREATE USER 'mi_tienda'@'%' IDENTIFIED BY 'Tienda1';
+GRANT ALL PRIVILEGES ON mi_tienda.* TO 'mi_tienda'@'%';
+FLUSH PRIVILEGES;
+```
+
+### Configuración en Django (`drf/settings.py`)
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mi_tienda',
+        'USER': 'mi_tienda',
+        'PASSWORD': 'Tienda1',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET default_storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
+    }
+}
+```
+
+### Ejecutar Migraciones
+```bash
+python manage.py migrate
+```
+
+---
+
+## 8. Datos Iniciales de la Aplicación (Fixtures)
+
+### Cargar datos iniciales
+Para poblar la base de datos con los datos de prueba iniciales (categorías, productos, clientes y pedidos):
+```bash
+python manage.py loaddata datos_iniciales.json
+```
+
+### Respaldar datos (Dumpdata)
+- **Respaldar toda la base de datos:**
+  ```bash
+  python manage.py dumpdata > mi_base_datos.json
+  ```
+- **Respaldar solo la aplicación `tienda_online`:**
+  ```bash
+  python manage.py dumpdata tienda_online --indent 2 > tienda_online_data.json
+  ```
+- **Respaldar un modelo específico (ej. `Producto`):**
+  ```bash
+  python manage.py dumpdata tienda_online.Producto --indent 2 > Producto_data.json
+  ```
+
+---
+
+## 9. Prueba de Conexión ORM SQLAlchemy
+Para verificar la conexión directa mediante SQLAlchemy a la base de datos MySQL:
+```bash
+python conexion_sqlalchemy.py
+```

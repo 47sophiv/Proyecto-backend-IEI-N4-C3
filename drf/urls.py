@@ -16,12 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Delegación de rutas hacia la aplicación tienda_online
     path('', include('tienda_online.urls')),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+
 
 # Manejador global para el error 404 personalizado
 handler404 = 'tienda_online.views.error_404'
