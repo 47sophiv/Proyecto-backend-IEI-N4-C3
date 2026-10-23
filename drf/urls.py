@@ -20,8 +20,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Delegación de rutas hacia la aplicación tienda_online
-    path('tienda_online/', include('tienda_online.urls')),
+    # Delegación de rutas hacia la aplicación tienda_online en la raíz
     path('', include('tienda_online.urls')),
 ]
 

@@ -22,6 +22,8 @@ IEI_N4_C3-main2/
 ├── manage.py                       # Utilidad de línea de comandos de Django
 ├── README.md                       # Documentación del proyecto y guía de instalación
 ├── requirements.txt                # Dependencias del proyecto
+├── script_base_datos.sql           # Script SQL de creación de base de datos, tablas y datos iniciales
+├── conexion_sqlalchemy.py          # Script de prueba de conexión directa mediante SQLAlchemy
 ├── drf/                            # Núcleo del proyecto Django
 │   ├── __init__.py
 │   ├── asgi.py
@@ -124,6 +126,18 @@ Una vez que el servidor esté en ejecución en `http://127.0.0.1:8000/`:
 ---
 
 ## 7. Manejo de Base de Datos (MySQL)
+
+### Script SQL de la Base de Datos (`script_base_datos.sql`)
+El proyecto incluye el archivo [`script_base_datos.sql`](script_base_datos.sql) en la raíz. Este archivo contiene:
+- Sentencias `CREATE DATABASE IF NOT EXISTS mi_tienda;` y selección de la base de datos.
+- Creación de todas las tablas del modelo relacional (`tienda_online_categoria`, `tienda_online_cliente`, `tienda_online_producto`, `tienda_online_pedido`, `tienda_online_detallepedido`) junto con las tablas del sistema Django (`auth_user`, `auth_permission`, migraciones, etc.).
+- Inserción de todos los datos iniciales y registros de prueba (categorías, productos, clientes, pedidos y usuarios administradores).
+
+Para importar el script directamente desde la terminal MySQL / consola:
+```bash
+mysql -u root -p < script_base_datos.sql
+```
+*(También puede ser abierto y ejecutado directamente en MySQL Workbench, DBeaver o phpMyAdmin).*
 
 ### Configuración de Usuario y Privilegios en MySQL
 En la consola de MySQL o phpMyAdmin:
