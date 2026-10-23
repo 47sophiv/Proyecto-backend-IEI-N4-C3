@@ -13,10 +13,10 @@
 CREATE DATABASE IF NOT EXISTS `mi_tienda` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `mi_tienda`;
 
--- 2. Creación opcional de usuario y permisos (según README del proyecto)
--- CREATE USER IF NOT EXISTS 'mi_tienda'@'%' IDENTIFIED BY 'Tienda1';
--- GRANT ALL PRIVILEGES ON `mi_tienda`.* TO 'mi_tienda'@'%';
--- FLUSH PRIVILEGES;
+-- 2. Creación de usuario y asignación de permisos
+CREATE USER IF NOT EXISTS 'mi_tienda'@'%' IDENTIFIED BY 'Tienda1';
+GRANT ALL PRIVILEGES ON `mi_tienda`.* TO 'mi_tienda'@'%';
+FLUSH PRIVILEGES;
 
 -- 3. Configuración del entorno de importación
 SET FOREIGN_KEY_CHECKS = 0;
