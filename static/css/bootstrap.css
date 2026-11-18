@@ -74,22 +74,23 @@ body {
 .btn-outline-danger { color: #ef4444; border-color: #ef4444; }
 .btn-outline-danger:hover { color: #fff; background-color: #ef4444; }
 .btn-sm { padding: .25rem .5rem; font-size: .75rem; border-radius: .375rem; }
-.form-control, .form-select {
+.form-control, .form-select, input[type="text"], input[type="password"], input[type="email"], input[type="number"], input[type="url"], textarea, select {
   display: block;
   width: 100%;
-  padding: .575rem .85rem;
+  padding: .65rem .95rem;
   font-size: .95rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #1e293b;
+  color: #0f172a;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #cbd5e1;
-  border-radius: .5rem;
+  border: 2px solid #94a3b8;
+  border-radius: .75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
   transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
-.form-control:focus, .form-select:focus {
-  border-color: #818cf8;
+.form-control:focus, .form-select:focus, input:focus, textarea:focus, select:focus {
+  border-color: #4f46e5;
   outline: 0;
   box-shadow: 0 0 0 .25rem rgba(99, 102, 241, .25);
 }

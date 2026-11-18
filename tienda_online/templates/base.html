@@ -19,6 +19,78 @@
         body {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
         }
+
+        /* Estilos universales para visibilidad de casillas e inputs en todos los formularios */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="number"],
+        input[type="url"],
+        textarea,
+        select,
+        .form-control,
+        .form-select {
+            display: block !important;
+            width: 100% !important;
+            padding: 0.65rem 0.95rem !important;
+            font-size: 0.925rem !important;
+            line-height: 1.5 !important;
+            color: #0f172a !important;
+            background-color: #ffffff !important;
+            border: 2px solid #94a3b8 !important;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08) !important;
+            outline: none !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        input[type="url"]:focus,
+        textarea:focus,
+        select:focus,
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #4f46e5 !important;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2) !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Estilo para formularios renderizados con form.as_p */
+        form p {
+            margin-bottom: 1.25rem !important;
+        }
+
+        form p > label {
+            display: block !important;
+            font-size: 0.85rem !important;
+            font-weight: 700 !important;
+            color: #334155 !important;
+            margin-bottom: 0.35rem !important;
+        }
+
+        .helptext {
+            display: block !important;
+            font-size: 0.75rem !important;
+            color: #64748b !important;
+            margin-top: 0.35rem !important;
+            margin-bottom: 0.5rem !important;
+            line-height: 1.4 !important;
+        }
+
+        ul.errorlist {
+            list-style: none !important;
+            padding: 0.5rem 0.75rem !important;
+            margin: 0.25rem 0 0.5rem 0 !important;
+            background-color: #fef2f2 !important;
+            border: 1px solid #fecaca !important;
+            border-radius: 0.5rem !important;
+            color: #991b1b !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+        }
     </style>
 
     {% block estilos %}{% endblock %}
