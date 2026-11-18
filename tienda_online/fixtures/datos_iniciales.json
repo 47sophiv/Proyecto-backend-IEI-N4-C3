@@ -97,6 +97,54 @@
     }
   },
   {
+    "model": "tienda_online.producto",
+    "pk": 5,
+    "fields": {
+      "categoria": 1,
+      "nombre": "Monitor Gamer Curvo 27\" 165Hz",
+      "descripcion": "Panel VA QHD 2K (2560x1440), curvatura 1500R, tiempo de respuesta 1ms, FreeSync Premium y HDR10.",
+      "precio": "249990.00",
+      "stock": 12,
+      "disponible": true,
+      "habilitado": true,
+      "imagen_url": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf",
+      "created_at": "2026-10-01T10:00:00Z",
+      "updated_at": "2026-10-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "tienda_online.producto",
+    "pk": 6,
+    "fields": {
+      "categoria": 3,
+      "nombre": "Audífonos Inalámbricos Noise Cancelling Pro",
+      "descripcion": "Cancelación activa de ruido híbrida, audio Hi-Res, batería de hasta 40 horas y micrófono con IA para llamadas claras.",
+      "precio": "129990.00",
+      "stock": 25,
+      "disponible": true,
+      "habilitado": true,
+      "imagen_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+      "created_at": "2026-10-01T10:10:00Z",
+      "updated_at": "2026-10-01T10:10:00Z"
+    }
+  },
+  {
+    "model": "tienda_online.producto",
+    "pk": 7,
+    "fields": {
+      "categoria": 2,
+      "nombre": "Escritorio Eléctrico Elevable Stand Desk Pro",
+      "descripcion": "Estructura de acero motorizada dual con altura ajustable programable, tablero de madera de 140x70cm y puertos USB integrados.",
+      "precio": "329990.00",
+      "stock": 8,
+      "disponible": true,
+      "habilitado": true,
+      "imagen_url": "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c",
+      "created_at": "2026-10-01T10:20:00Z",
+      "updated_at": "2026-10-01T10:20:00Z"
+    }
+  },
+  {
     "model": "tienda_online.cliente",
     "pk": 1,
     "fields": {

@@ -333,14 +333,17 @@ CREATE TABLE `tienda_online_producto` (
   PRIMARY KEY (`id`),
   KEY `tienda_online_produc_categoria_id_6acde150_fk_tienda_on` (`categoria_id`),
   CONSTRAINT `tienda_online_produc_categoria_id_6acde150_fk_tienda_on` FOREIGN KEY (`categoria_id`) REFERENCES `tienda_online_categoria` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Datos para `tienda_online_producto` (4 registros)
+-- Datos para `tienda_online_producto` (7 registros)
 INSERT INTO `tienda_online_producto` (`id`, `nombre`, `descripcion`, `precio`, `stock`, `disponible`, `habilitado`, `imagen_url`, `created_at`, `updated_at`, `categoria_id`) VALUES
   (1, 'Laptop Ultrabook Pro 15', 'Procesador Intel Core i7, 16GB RAM, SSD 512GB NVMe, Pantalla FHD IPS 15.6 pulgadas.', 899990.00, 15, 1, 1, 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853', '2026-09-25 10:05:00', '2026-09-25 10:05:00', 1),
   (2, 'Teclado Mecánico RGB Inalámbrico', 'Switches mecánicos táctiles, conectividad Bluetooth y 2.4GHz, retroiluminación RGB configurable.', 64990.00, 35, 1, 1, 'https://images.unsplash.com/photo-1587829741301-dc798b83add3', '2026-09-25 10:10:00', '2026-09-25 10:10:00', 3),
   (3, 'Mouse Ergonómico Vertical', 'Sensor óptico de alta precisión 4000 DPI, diseño ergonómico para reducir fatiga de muñeca.', 39990.00, 50, 1, 1, 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7', '2026-09-25 10:15:00', '2026-09-25 10:15:00', 3),
-  (4, 'Silla Ergonómica de Oficina', 'Soporte lumbar ajustable, apoyabrazos 3D, malla transpirable y pistón de gas clase 4.', 179990.00, 10, 1, 1, 'https://images.unsplash.com/photo-1580481077195-c3f995874258', '2026-09-25 10:20:00', '2026-09-25 10:20:00', 2);
+  (4, 'Silla Ergonómica de Oficina', 'Soporte lumbar ajustable, apoyabrazos 3D, malla transpirable y pistón de gas clase 4.', 179990.00, 10, 1, 1, 'https://images.unsplash.com/photo-1580481077195-c3f995874258', '2026-09-25 10:20:00', '2026-09-25 10:20:00', 2),
+  (5, 'Monitor Gamer Curvo 27\" 165Hz', 'Panel VA QHD 2K (2560x1440), curvatura 1500R, tiempo de respuesta 1ms, FreeSync Premium y HDR10.', 249990.00, 12, 1, 1, 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf', '2026-10-01 10:00:00', '2026-10-01 10:00:00', 1),
+  (6, 'Audífonos Inalámbricos Noise Cancelling Pro', 'Cancelación activa de ruido híbrida, audio Hi-Res, batería de hasta 40 horas y micrófono con IA para llamadas claras.', 129990.00, 25, 1, 1, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e', '2026-10-01 10:10:00', '2026-10-01 10:10:00', 3),
+  (7, 'Escritorio Eléctrico Elevable Stand Desk Pro', 'Estructura de acero motorizada dual con altura ajustable programable, tablero de madera de 140x70cm y puertos USB integrados.', 329990.00, 8, 1, 1, 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c', '2026-10-01 10:20:00', '2026-10-01 10:20:00', 2);
 
 -- ----------------------------------------------------------------------------
 -- Estructura y datos de la tabla `tienda_online_pedido`
