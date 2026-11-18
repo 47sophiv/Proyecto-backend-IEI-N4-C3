@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 
 from .models import Categoria, Producto, Cliente, Pedido, DetallePedido
-from .forms import ProductoForm, CambiarEstadoForm
+from .forms import ProductoForm, CambiarEstadoForm, RegistroUsuarioForm
 from .serializer import (
     CategoriaSerializer,
     ProductoSerializer,
@@ -200,11 +200,11 @@ ProductoDetailView = RegistroDetailView
 
 def registro(request):
     """
-    Vista FBV para el registro de nuevos usuarios mediante UserCreationForm.
+    Vista FBV para el registro de nuevos usuarios mediante RegistroUsuarioForm.
     Inicia sesión automáticamente tras un registro exitoso.
     """
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -213,7 +213,7 @@ def registro(request):
         else:
             messages.error(request, "No ha sido posible registrarlo. Por favor revise el formulario por errores.")
     else:
-        form = UserCreationForm()
+        form = RegistroUsuarioForm()
     return render(request, 'registration/registro.html', {'form': form})
 
 
