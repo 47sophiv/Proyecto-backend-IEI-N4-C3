@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block titulo %}Área Protegida - Tienda Online{% endblock %}
+
+{% block contenido %}
+<div class="max-w-xl mx-auto py-8">
+    <div class="bg-white p-8 rounded-3xl border border-indigo-100 shadow-xl space-y-6 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-3xl mx-auto">
+            🛡️
+        </div>
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Vista Protegida por Sesión</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-2">
+                Esta vista requiere que el usuario esté debidamente autenticado en Django mediante el decorador <code>@login_required</code>.
+            </p>
+        </div>
+
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-left text-xs space-y-2">
+            <p><span class="font-bold text-slate-700">Usuario Autenticado:</span> {{ request.user.username }}</p>
+            <p><span class="font-bold text-slate-700">Email:</span> {{ request.user.email|default:"No registrado" }}</p>
+            <p><span class="font-bold text-slate-700">Dato en Sesión (request.session):</span> {{ request.session.ultimo_acceso }}</p>
+        </div>
+
+        <div class="pt-4 flex justify-center space-x-3">
+            <a href="/" class="px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                ← Volver al inicio
+            </a>
+            <a href="{% url 'listado_registros' %}" class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors">
+                Ir a Registros
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

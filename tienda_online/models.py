@@ -24,6 +24,7 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
     stock = models.IntegerField(default=0, verbose_name="Stock Disponible")
     disponible = models.BooleanField(default=True, verbose_name="¿Disponible para venta?")
+    habilitado = models.BooleanField(default=True, verbose_name="¿Habilitado?")
     imagen_url = models.URLField(blank=True, null=True, verbose_name="URL de Imagen")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Última Actualización")

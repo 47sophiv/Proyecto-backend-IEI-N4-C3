@@ -325,6 +325,7 @@ CREATE TABLE `tienda_online_producto` (
   `precio` decimal(10,2) NOT NULL,
   `stock` int NOT NULL,
   `disponible` tinyint(1) NOT NULL,
+  `habilitado` tinyint(1) NOT NULL DEFAULT 1,
   `imagen_url` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
@@ -335,11 +336,11 @@ CREATE TABLE `tienda_online_producto` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Datos para `tienda_online_producto` (4 registros)
-INSERT INTO `tienda_online_producto` (`id`, `nombre`, `descripcion`, `precio`, `stock`, `disponible`, `imagen_url`, `created_at`, `updated_at`, `categoria_id`) VALUES
-  (1, 'Laptop Ultrabook Pro 15', 'Procesador Intel Core i7, 16GB RAM, SSD 512GB NVMe, Pantalla FHD IPS 15.6 pulgadas.', 899990.00, 15, 1, 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853', '2026-09-25 10:05:00', '2026-09-25 10:05:00', 1),
-  (2, 'Teclado Mecánico RGB Inalámbrico', 'Switches mecánicos táctiles, conectividad Bluetooth y 2.4GHz, retroiluminación RGB configurable.', 64990.00, 35, 1, 'https://images.unsplash.com/photo-1587829741301-dc798b83add3', '2026-09-25 10:10:00', '2026-09-25 10:10:00', 3),
-  (3, 'Mouse Ergonómico Vertical', 'Sensor óptico de alta precisión 4000 DPI, diseño ergonómico para reducir fatiga de muñeca.', 39990.00, 50, 1, 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7', '2026-09-25 10:15:00', '2026-09-25 10:15:00', 3),
-  (4, 'Silla Ergonómica de Oficina', 'Soporte lumbar ajustable, apoyabrazos 3D, malla transpirable y pistón de gas clase 4.', 179990.00, 10, 1, 'https://images.unsplash.com/photo-1580481077195-c3f995874258', '2026-09-25 10:20:00', '2026-09-25 10:20:00', 2);
+INSERT INTO `tienda_online_producto` (`id`, `nombre`, `descripcion`, `precio`, `stock`, `disponible`, `habilitado`, `imagen_url`, `created_at`, `updated_at`, `categoria_id`) VALUES
+  (1, 'Laptop Ultrabook Pro 15', 'Procesador Intel Core i7, 16GB RAM, SSD 512GB NVMe, Pantalla FHD IPS 15.6 pulgadas.', 899990.00, 15, 1, 1, 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853', '2026-09-25 10:05:00', '2026-09-25 10:05:00', 1),
+  (2, 'Teclado Mecánico RGB Inalámbrico', 'Switches mecánicos táctiles, conectividad Bluetooth y 2.4GHz, retroiluminación RGB configurable.', 64990.00, 35, 1, 1, 'https://images.unsplash.com/photo-1587829741301-dc798b83add3', '2026-09-25 10:10:00', '2026-09-25 10:10:00', 3),
+  (3, 'Mouse Ergonómico Vertical', 'Sensor óptico de alta precisión 4000 DPI, diseño ergonómico para reducir fatiga de muñeca.', 39990.00, 50, 1, 1, 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7', '2026-09-25 10:15:00', '2026-09-25 10:15:00', 3),
+  (4, 'Silla Ergonómica de Oficina', 'Soporte lumbar ajustable, apoyabrazos 3D, malla transpirable y pistón de gas clase 4.', 179990.00, 10, 1, 1, 'https://images.unsplash.com/photo-1580481077195-c3f995874258', '2026-09-25 10:20:00', '2026-09-25 10:20:00', 2);
 
 -- ----------------------------------------------------------------------------
 -- Estructura y datos de la tabla `tienda_online_pedido`

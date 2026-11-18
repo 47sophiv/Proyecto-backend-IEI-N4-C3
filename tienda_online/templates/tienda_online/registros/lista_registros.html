@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block titulo %}Listado de Registros - Tienda Online{% endblock %}
+
+{% block contenido %}
+<div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Encabezado y Acción Crear -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-indigo-100 shadow-sm">
+        <div>
+            <h3 class="text-2xl font-black text-slate-900 tracking-tight">Listado de registros</h3>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                Catálogo de productos registrados con control de estado y eliminación lógica.
+            </p>
+        </div>
+        <a href="{% url 'crear_registro' %}" class="inline-flex items-center space-x-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-xl shadow-sm transition-all transform hover:-translate-y-0.5">
+            <span>➕</span>
+            <span>Agregar registro</span>
+        </a>
+    </div>
+
+    <!-- Tabla de Registros -->
+    <div class="bg-white rounded-2xl border border-indigo-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="table min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Nombre</th>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Categoría</th>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Precio</th>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Stock</th>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Estado</th>
+                        <th class="px-6 py-3.5 text-center text-xs font-bold text-slate-600 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 bg-white">
+                    {% for registro in object_list %}
+                    <tr class="hover:bg-slate-50/70 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900">
+                            {{ registro.nombre }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-600 font-medium">
+                            {{ registro.categoria.nombre|default:"Sin categoría" }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-emerald-600">
+                            ${{ registro.precio }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-600 font-semibold">
+                            {{ registro.stock }} uds.
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs">
+                            {% if registro.habilitado %}
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                                Habilitado
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">
+                                Deshabilitado
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-xs space-x-2">
+                            <a href="{% url 'editar_registro' registro.pk %}" class="inline-block px-3 py-1.5 font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors">
+                                Editar
+                            </a>
+                            <a href="{% url 'detalle_registro' registro.pk %}" class="inline-block px-3 py-1.5 font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors">
+                                Ver detalle
+                            </a>
+                            {% if registro.habilitado %}
+                            <button type="button" class="cambiar-estado px-3 py-1.5 font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-200 transition-colors cursor-pointer"
+                                data-url="{% url 'cambiar_estado' registro.pk %}"
+                                data-current="true">Deshabilitar</button>
+                            {% else %}
+                            <button type="button" class="cambiar-estado px-3 py-1.5 font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
+                                data-url="{% url 'cambiar_estado' registro.pk %}"
+                                data-current="false">Habilitar</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-sm text-slate-500 font-medium">
+                            No se encontraron registros.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% csrf_token %}
+
+<script>
+    document.addEventListener('click', function (event) {
+        const button = event.target.closest('.cambiar-estado');
+        if (!button) return;
+
+        const nextState = button.dataset.current !== 'true';
+        const formData = new FormData();
+        formData.append('habilitado', nextState);
+
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch(button.dataset.url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('No fue posible cambiar el estado del registro.');
+                }
+            })
+            .catch(error => console.error('Error al cambiar el estado:', error));
+    });
+</script>
+{% endblock %}
