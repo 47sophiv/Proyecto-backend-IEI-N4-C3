@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block titulo %}Detalle de Cliente - {{ cliente.nombre }}{% endblock %}
+
+{% block contenido %}
+<div class="max-w-2xl mx-auto space-y-6">
+
+    <div class="bg-white p-8 rounded-2xl border border-indigo-100 shadow-sm space-y-6">
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
+                DetailView • Cliente #{{ cliente.pk }}
+            </span>
+            {% if cliente.activo %}
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
+                Activo
+            </span>
+            {% else %}
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                Inactivo
+            </span>
+            {% endif %}
+        </div>
+
+        <div class="space-y-3">
+            <h3 class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ cliente.nombre }}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <strong>Dirección:</strong> {{ cliente.direccion|default:"Sin dirección registrada." }}
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 text-xs">
+            <div class="bg-purple-50/50 p-3.5 rounded-xl border border-purple-100">
+                <span class="text-slate-500 font-semibold block">Correo Electrónico:</span>
+                <span class="text-sm font-bold text-purple-700">{{ cliente.email }}</span>
+            </div>
+            <div class="bg-indigo-50/50 p-3.5 rounded-xl border border-indigo-100">
+                <span class="text-slate-500 font-semibold block">Teléfono de Contacto:</span>
+                <span class="text-sm font-bold text-slate-900">{{ cliente.telefono|default:"No registrado" }}</span>
+            </div>
+        </div>
+
+        <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 text-xs flex justify-between items-center">
+            <span class="text-slate-600 font-semibold">Total de pedidos realizados:</span>
+            <span class="text-sm font-bold text-purple-700 font-mono">{{ cliente.pedidos.count }} pedido(s)</span>
+        </div>
+
+        <div class="pt-6 border-t border-slate-100 flex items-center justify-between">
+            <a href="{% url 'cliente_list' %}" class="px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                ← Volver al listado
+            </a>
+            <div class="space-x-2">
+                <a href="{% url 'cliente_update' cliente.pk %}" class="px-4 py-2 text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-sm transition-colors">
+                    Editar
+                </a>
+                <a href="{% url 'cliente_delete' cliente.pk %}" class="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-sm transition-colors">
+                    Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

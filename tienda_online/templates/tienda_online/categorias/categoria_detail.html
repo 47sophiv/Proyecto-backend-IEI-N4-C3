@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block titulo %}Detalle de Categoría - {{ categoria.nombre }}{% endblock %}
+
+{% block contenido %}
+<div class="max-w-2xl mx-auto space-y-6">
+
+    <div class="bg-white p-8 rounded-2xl border border-indigo-100 shadow-sm space-y-6">
+        <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                DetailView • Categoría #{{ categoria.pk }}
+            </span>
+            {% if categoria.activo %}
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
+                Activa
+            </span>
+            {% else %}
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                Inactiva
+            </span>
+            {% endif %}
+        </div>
+
+        <div class="space-y-3">
+            <h3 class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ categoria.nombre }}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                {{ categoria.descripcion|default:"Sin descripción registrada." }}
+            </p>
+        </div>
+
+        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 text-xs flex justify-between items-center">
+            <span class="text-slate-600 font-semibold">Productos asociados a esta categoría:</span>
+            <span class="text-sm font-bold text-indigo-700 font-mono">{{ categoria.productos.count }} producto(s)</span>
+        </div>
+
+        <div class="pt-6 border-t border-slate-100 flex items-center justify-between">
+            <a href="{% url 'categoria_list' %}" class="px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                ← Volver al listado
+            </a>
+            <div class="space-x-2">
+                <a href="{% url 'categoria_update' categoria.pk %}" class="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-colors">
+                    Editar
+                </a>
+                <a href="{% url 'categoria_delete' categoria.pk %}" class="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-sm transition-colors">
+                    Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

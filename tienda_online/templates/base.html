@@ -116,20 +116,26 @@
             </a>
 
             <!-- Enlaces de Navegación -->
-            <nav class="flex items-center space-x-1 sm:space-x-3 text-sm font-semibold">
-                <a href="/" class="px-3 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
+            <nav class="flex items-center space-x-1 sm:space-x-2 text-sm font-semibold">
+                <a href="/" class="px-2.5 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
                     Inicio
                 </a>
-                <a href="{% url 'listado_registros' %}" class="px-3 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
-                    CRUD Registros
+                <a href="{% url 'producto_list' %}" class="px-2.5 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
+                    Productos
                 </a>
-                <a href="{% url 'crear_registro' %}" class="px-3 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
-                    + Nuevo Producto
+                <a href="{% url 'categoria_list' %}" class="px-2.5 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
+                    Categorías
                 </a>
-                <a href="/api/" class="px-3 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
+                <a href="{% url 'cliente_list' %}" class="px-2.5 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
+                    Clientes
+                </a>
+                <a href="{% url 'pedido_list' %}" class="px-2.5 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
+                    Pedidos
+                </a>
+                <a href="/api/" class="px-2.5 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
                     API DRF
                 </a>
-                <a href="/admin/" target="_blank" class="px-3 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
+                <a href="/admin/" target="_blank" class="px-2.5 py-2 text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/80 rounded-lg transition-colors">
                     Admin
                 </a>
             </nav>
@@ -182,8 +188,11 @@
     <footer class="bg-white/90 border-t border-indigo-100/80 py-4 mt-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
             <span>&copy; 2026 Tienda Online - Sistema de Gestión Backend Django.</span>
-            <div class="flex space-x-4">
-                <a href="{% url 'listado_registros' %}" class="hover:text-indigo-600 transition-colors">Registros</a>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="{% url 'producto_list' %}" class="hover:text-indigo-600 transition-colors">Productos</a>
+                <a href="{% url 'categoria_list' %}" class="hover:text-indigo-600 transition-colors">Categorías</a>
+                <a href="{% url 'cliente_list' %}" class="hover:text-indigo-600 transition-colors">Clientes</a>
+                <a href="{% url 'pedido_list' %}" class="hover:text-indigo-600 transition-colors">Pedidos</a>
                 <a href="/api/" class="hover:text-indigo-600 transition-colors">API REST</a>
                 <a href="/404/" class="hover:text-indigo-600 transition-colors">Página 404</a>
             </div>

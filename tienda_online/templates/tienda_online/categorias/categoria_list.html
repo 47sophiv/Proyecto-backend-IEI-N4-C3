@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block titulo %}Categorías - Tienda Online{% endblock %}
+
+{% block contenido %}
+<div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Encabezado y Acción Crear -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-indigo-100 shadow-sm">
+        <div>
+            <div class="inline-flex items-center space-x-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100 mb-2">
+                <span>🏷️</span>
+                <span>Módulo de Categorías</span>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 tracking-tight">Listado de Categorías (ListView)</h3>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                Familias de productos y agrupación temática de catálogo.
+            </p>
+        </div>
+        <a href="{% url 'categoria_create' %}" class="inline-flex items-center space-x-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-xl shadow-sm transition-all transform hover:-translate-y-0.5">
+            <span>➕</span>
+            <span>Nueva Categoría</span>
+        </a>
+    </div>
+
+    <!-- Tabla de Categorías -->
+    <div class="bg-white rounded-2xl border border-indigo-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="table min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">#</th>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Nombre</th>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Descripción</th>
+                        <th class="px-6 py-3.5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Estado</th>
+                        <th class="px-6 py-3.5 text-center text-xs font-bold text-slate-600 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 bg-white">
+                    {% for categoria in categorias %}
+                    <tr class="hover:bg-slate-50/70 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400 font-mono">
+                            #{{ categoria.id }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900">
+                            {{ categoria.nombre }}
+                        </td>
+                        <td class="px-6 py-4 text-xs text-slate-600 max-w-xs truncate">
+                            {{ categoria.descripcion|default:"Sin descripción" }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-xs">
+                            {% if categoria.activo %}
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                                Activa
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+                                Inactiva
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-xs space-x-1.5">
+                            <a href="{% url 'categoria_detail' categoria.pk %}" class="inline-block px-2.5 py-1.5 font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors">
+                                Detalle
+                            </a>
+                            <a href="{% url 'categoria_update' categoria.pk %}" class="inline-block px-2.5 py-1.5 font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors">
+                                Editar
+                            </a>
+                            <a href="{% url 'categoria_delete' categoria.pk %}" class="inline-block px-2.5 py-1.5 font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-200 transition-colors">
+                                Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-sm text-slate-500 font-medium">
+                            No se encontraron categorías registradas.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

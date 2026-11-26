@@ -11,28 +11,53 @@ router.register(r'pedidos', views.PedidoViewSet)
 router.register(r'detalles-pedidos', views.DetallePedidoViewSet)
 
 urlpatterns = [
-    # 1. Página principal de bienvenida
+    # 1. Página principal de bienvenida (Vista pública obligatoria)
     path('', views.bienvenida, name='bienvenida'),
 
-    # 2. Rutas CRUD manual tradicional (Sección 20 de la guía)
+    # 2. CRUD CBV: PRODUCTOS (ListView, DetailView, CreateView, UpdateView, DeleteView)
+    path('productos/', views.ProductoListView.as_view(), name='producto_list'),
+    path('productos/crear/', views.ProductoCreateView.as_view(), name='producto_create'),
+    path('productos/<int:pk>/', views.ProductoDetailView.as_view(), name='producto_detail'),
+    path('productos/<int:pk>/editar/', views.ProductoUpdateView.as_view(), name='producto_update'),
+    path('productos/<int:pk>/eliminar/', views.ProductoDeleteView.as_view(), name='producto_delete'),
+    path('productos/<int:pk>/cambiar_estado/', views.CambiarEstadoView.as_view(), name='producto_cambiar_estado'),
+
+    # Rutas alias para compatibilidad con evaluaciones previas
     path('registros/', views.RegistroListView.as_view(), name='listado_registros'),
     path('registros/crear/', views.RegistroCreateView.as_view(), name='crear_registro'),
+    path('registros/<int:pk>/', views.RegistroDetailView.as_view(), name='detalle_registro'),
+    path('registros/<int:pk>/detalle/', views.RegistroDetailView.as_view(), name='detalle_registro_alias'),
     path('registros/<int:pk>/editar/', views.RegistroUpdateView.as_view(), name='editar_registro'),
-    path('registros/<int:pk>/detalle/', views.RegistroDetailView.as_view(), name='detalle_registro'),
+    path('registros/<int:pk>/eliminar/', views.RegistroDeleteView.as_view(), name='eliminar_registro'),
     path('registros/<int:pk>/cambiar_estado/', views.CambiarEstadoView.as_view(), name='cambiar_estado'),
 
-    # Rutas aliadas para productos
-    path('productos/', views.ProductoListView.as_view(), name='productos_listado'),
-    path('productos/crear/', views.ProductoCreateView.as_view(), name='productos_crear'),
-    path('productos/<int:pk>/editar/', views.ProductoUpdateView.as_view(), name='productos_editar'),
-    path('productos/<int:pk>/detalle/', views.ProductoDetailView.as_view(), name='productos_detalle'),
+    # 3. CRUD CBV: CATEGORIAS (ListView, DetailView, CreateView, UpdateView, DeleteView)
+    path('categorias/', views.CategoriaListView.as_view(), name='categoria_list'),
+    path('categorias/crear/', views.CategoriaCreateView.as_view(), name='categoria_create'),
+    path('categorias/<int:pk>/', views.CategoriaDetailView.as_view(), name='categoria_detail'),
+    path('categorias/<int:pk>/editar/', views.CategoriaUpdateView.as_view(), name='categoria_update'),
+    path('categorias/<int:pk>/eliminar/', views.CategoriaDeleteView.as_view(), name='categoria_delete'),
 
-    # 3. Vista de sesión protegida (Sección 21 de la guía)
+    # 4. CRUD CBV: CLIENTES (ListView, DetailView, CreateView, UpdateView, DeleteView)
+    path('clientes/', views.ClienteListView.as_view(), name='cliente_list'),
+    path('clientes/crear/', views.ClienteCreateView.as_view(), name='cliente_create'),
+    path('clientes/<int:pk>/', views.ClienteDetailView.as_view(), name='cliente_detail'),
+    path('clientes/<int:pk>/editar/', views.ClienteUpdateView.as_view(), name='cliente_update'),
+    path('clientes/<int:pk>/eliminar/', views.ClienteDeleteView.as_view(), name='cliente_delete'),
+
+    # 5. CRUD CBV: PEDIDOS (ListView, DetailView, CreateView, UpdateView, DeleteView)
+    path('pedidos/', views.PedidoListView.as_view(), name='pedido_list'),
+    path('pedidos/crear/', views.PedidoCreateView.as_view(), name='pedido_create'),
+    path('pedidos/<int:pk>/', views.PedidoDetailView.as_view(), name='pedido_detail'),
+    path('pedidos/<int:pk>/editar/', views.PedidoUpdateView.as_view(), name='pedido_update'),
+    path('pedidos/<int:pk>/eliminar/', views.PedidoDeleteView.as_view(), name='pedido_delete'),
+
+    # 6. Vista de sesión protegida
     path('protegida/', views.vista_protegida, name='vista_protegida'),
 
-    # 4. Rutas API REST generadas por el router de DRF (Secciones 18 y 19)
+    # 7. Rutas API REST generadas por el router de DRF (Requerimiento acumulativo)
     path('api/', include(router.urls)),
 
-    # 5. Ruta directa para verificar la plantilla 404 (Sección 8)
+    # 8. Ruta directa para verificar la plantilla 404
     path('404/', views.error_404, name='error_404'),
 ]

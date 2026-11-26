@@ -2,15 +2,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 
 from .models import Categoria, Producto, Cliente, Pedido, DetallePedido
-from .forms import ProductoForm, CambiarEstadoForm, RegistroUsuarioForm
+from .forms import (
+    ProductoForm,
+    CategoriaForm,
+    ClienteForm,
+    PedidoForm,
+    CambiarEstadoForm,
+    RegistroUsuarioForm,
+)
 from .serializer import (
     CategoriaSerializer,
     ProductoSerializer,
@@ -21,16 +27,14 @@ from .serializer import (
 
 
 # ==============================================================================
-# 1. Página de Inicio y Vistas Principales (Sección 7)
+# 1. Página de Inicio y Vistas Principales (Vista pública obligatoria)
 # ==============================================================================
 
 def bienvenida(request):
     """
-    Vista principal de la aplicación Tienda Online.
-    Demuestra el manejo de variables, estructuras de control, contexto dinámico
-    y el uso de sesiones con request.session (Sección 21).
+    Vista pública principal de la aplicación Tienda Online.
+    Presenta la interfaz de navegación, catálogo de módulos y acceso a los CRUDs.
     """
-    # Almacenar mensaje en la sesión según Sección 21 de la guía
     request.session['mensaje_bienvenida'] = '¡Bienvenido a Tienda Online!'
 
     titulo_proyecto = 'Tienda Online'
@@ -38,8 +42,8 @@ def bienvenida(request):
     numero_proyecto = 8
     servidor_activo = True
     descripcion_sistema = (
-        'Sistema digital para la gestión de ventas, pedidos e inventario de comercio electrónico. '
-        'Selecciona un módulo para comenzar.'
+        'Sistema digital para la gestión de productos, categorías, clientes y pedidos. '
+        'Selecciona una entidad para gestionar su CRUD completo mediante Vistas Basadas en Clases (CBV).'
     )
 
     modulos = [
@@ -47,8 +51,8 @@ def bienvenida(request):
             'id': 1,
             'nombre': 'Catálogo de Productos',
             'icono': '📦',
-            'descripcion': 'Administra el inventario, categorías, stock y precios de la tienda.',
-            'url': '/registros/',
+            'descripcion': 'CRUD completo de inventario, precios, stock y eliminación.',
+            'url': '/productos/',
             'color': 'blue',
             'color_clase': 'bg-blue-600',
             'hover_clase': 'hover:bg-blue-700',
@@ -57,22 +61,22 @@ def bienvenida(request):
         },
         {
             'id': 2,
-            'nombre': 'Ventas y Pedidos',
-            'icono': '🛒',
-            'descripcion': 'Control de compras, seguimiento de estados y órdenes de clientes.',
-            'url': '/api/pedidos/',
-            'color': 'emerald',
-            'color_clase': 'bg-emerald-600',
-            'hover_clase': 'hover:bg-emerald-700',
-            'borde_clase': 'border-emerald-100',
+            'nombre': 'Categorías',
+            'icono': '🏷️',
+            'descripcion': 'Gestión y clasificación de familias de productos.',
+            'url': '/categorias/',
+            'color': 'indigo',
+            'color_clase': 'bg-indigo-600',
+            'hover_clase': 'hover:bg-indigo-700',
+            'borde_clase': 'border-indigo-100',
             'activo': True,
         },
         {
             'id': 3,
-            'nombre': 'Clientes & Usuarios',
+            'nombre': 'Clientes',
             'icono': '👥',
-            'descripcion': 'Registro de usuarios, perfiles de compradores y operadores.',
-            'url': '/api/clientes/',
+            'descripcion': 'Administración de clientes, correos y direcciones.',
+            'url': '/clientes/',
             'color': 'purple',
             'color_clase': 'bg-purple-600',
             'hover_clase': 'hover:bg-purple-700',
@@ -81,14 +85,14 @@ def bienvenida(request):
         },
         {
             'id': 4,
-            'nombre': 'Métricas & Reportes',
-            'icono': '📊',
-            'descripcion': 'Indicadores de gestión, tendencias de ventas y estadísticas.',
-            'url': '/api/',
-            'color': 'amber',
-            'color_clase': 'bg-amber-500',
-            'hover_clase': 'hover:bg-amber-600',
-            'borde_clase': 'border-amber-100',
+            'nombre': 'Ventas y Pedidos',
+            'icono': '🛒',
+            'descripcion': 'Seguimiento de pedidos, estados de entrega y montos totales.',
+            'url': '/pedidos/',
+            'color': 'emerald',
+            'color_clase': 'bg-emerald-600',
+            'hover_clase': 'hover:bg-emerald-700',
+            'borde_clase': 'border-emerald-100',
             'activo': True,
         },
     ]
@@ -101,15 +105,15 @@ def bienvenida(request):
         'descripcion': descripcion_sistema,
         'modulos': modulos,
         'total_modulos': len(modulos),
+        'total_productos': Producto.objects.count(),
+        'total_categorias': Categoria.objects.count(),
+        'total_clientes': Cliente.objects.count(),
+        'total_pedidos': Pedido.objects.count(),
         'mensaje_sesion': request.session.get('mensaje_bienvenida', ''),
     }
 
     return render(request, 'tienda_online/bienvenida.html', contexto)
 
-
-# ==============================================================================
-# 2. Control de Errores 404 (Sección 8)
-# ==============================================================================
 
 def error_404(request, exception=None, *args, **kwargs):
     """
@@ -124,78 +128,227 @@ def error_404(request, exception=None, *args, **kwargs):
 
 
 # ==============================================================================
-# 3. CRUD Manual con Vistas Basadas en Clases (CBV) (Sección 20)
+# 2. CRUD CBV: Entidad PRODUCTO (Evaluación 3 - Criterio 2)
 # ==============================================================================
 
-class RegistroListView(ListView):
-    """
-    ListView para listar registros del modelo Producto en la plantilla lista_registros.html.
-    """
+class ProductoListView(ListView):
     model = Producto
-    template_name = 'tienda_online/registros/lista_registros.html'
+    template_name = 'tienda_online/productos/producto_list.html'
     context_object_name = 'object_list'
     ordering = ['-id']
 
 
-class RegistroCreateView(CreateView):
-    """
-    CreateView para procesar la creación de un nuevo Producto con ProductoForm.
-    """
+class ProductoDetailView(DetailView):
+    model = Producto
+    template_name = 'tienda_online/productos/producto_detail.html'
+    context_object_name = 'producto'
+
+
+class ProductoCreateView(CreateView):
     model = Producto
     form_class = ProductoForm
-    template_name = 'tienda_online/registros/crear_registro.html'
-    success_url = reverse_lazy('listado_registros')
+    template_name = 'tienda_online/productos/producto_form.html'
+    success_url = reverse_lazy('producto_list')
 
     def form_valid(self, form):
-        messages.success(self.request, "Registro creado exitosamente.")
+        messages.success(self.request, "Producto creado exitosamente.")
         return super().form_valid(form)
 
 
-class RegistroUpdateView(UpdateView):
-    """
-    UpdateView para editar los datos de un Producto existente mediante su pk.
-    """
+class ProductoUpdateView(UpdateView):
     model = Producto
     form_class = ProductoForm
-    template_name = 'tienda_online/registros/editar_registro.html'
-    success_url = reverse_lazy('listado_registros')
+    template_name = 'tienda_online/productos/producto_form.html'
+    success_url = reverse_lazy('producto_list')
 
     def form_valid(self, form):
-        messages.success(self.request, "Registro actualizado correctamente.")
+        messages.success(self.request, "Producto actualizado correctamente.")
         return super().form_valid(form)
+
+
+class ProductoDeleteView(DeleteView):
+    model = Producto
+    template_name = 'tienda_online/productos/producto_confirm_delete.html'
+    success_url = reverse_lazy('producto_list')
+    context_object_name = 'producto'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Producto eliminado correctamente.")
+        return super().delete(request, *args, **kwargs)
 
 
 class CambiarEstadoView(UpdateView):
     """
-    UpdateView especializada para habilitar o deshabilitar un registro
-    (eliminado lógico) sin borrarlo de la base de datos.
+    Acción rápida para cambiar el estado habilitado de un producto vía AJAX / POST.
     """
     model = Producto
     form_class = CambiarEstadoForm
 
     def form_valid(self, form):
         self.object = form.save()
-        return redirect('listado_registros')
+        return redirect('producto_list')
 
 
-class RegistroDetailView(DetailView):
-    """
-    DetailView para consultar la información detallada de un Producto.
-    """
-    model = Producto
-    template_name = 'tienda_online/registros/detalle_registro.html'
-    context_object_name = 'registro'
-
-
-# Aliases para compatibilidad con nomenclaturas de Producto
-ProductoListView = RegistroListView
-ProductoCreateView = RegistroCreateView
-ProductoUpdateView = RegistroUpdateView
-ProductoDetailView = RegistroDetailView
+# Aliases para compatibilidad con evaluaciones previas
+RegistroListView = ProductoListView
+RegistroCreateView = ProductoCreateView
+RegistroUpdateView = ProductoUpdateView
+RegistroDetailView = ProductoDetailView
+RegistroDeleteView = ProductoDeleteView
 
 
 # ==============================================================================
-# 4. Autenticación y Gestión de Sesiones (Sección 21)
+# 3. CRUD CBV: Entidad CATEGORIA (Evaluación 3 - Criterio 2)
+# ==============================================================================
+
+class CategoriaListView(ListView):
+    model = Categoria
+    template_name = 'tienda_online/categorias/categoria_list.html'
+    context_object_name = 'categorias'
+    ordering = ['nombre']
+
+
+class CategoriaDetailView(DetailView):
+    model = Categoria
+    template_name = 'tienda_online/categorias/categoria_detail.html'
+    context_object_name = 'categoria'
+
+
+class CategoriaCreateView(CreateView):
+    model = Categoria
+    form_class = CategoriaForm
+    template_name = 'tienda_online/categorias/categoria_form.html'
+    success_url = reverse_lazy('categoria_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Categoría creada exitosamente.")
+        return super().form_valid(form)
+
+
+class CategoriaUpdateView(UpdateView):
+    model = Categoria
+    form_class = CategoriaForm
+    template_name = 'tienda_online/categorias/categoria_form.html'
+    success_url = reverse_lazy('categoria_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Categoría actualizada correctamente.")
+        return super().form_valid(form)
+
+
+class CategoriaDeleteView(DeleteView):
+    model = Categoria
+    template_name = 'tienda_online/categorias/categoria_confirm_delete.html'
+    success_url = reverse_lazy('categoria_list')
+    context_object_name = 'categoria'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Categoría eliminada correctamente.")
+        return super().delete(request, *args, **kwargs)
+
+
+# ==============================================================================
+# 4. CRUD CBV: Entidad CLIENTE (Evaluación 3 - Criterio 2)
+# ==============================================================================
+
+class ClienteListView(ListView):
+    model = Cliente
+    template_name = 'tienda_online/clientes/cliente_list.html'
+    context_object_name = 'clientes'
+    ordering = ['-id']
+
+
+class ClienteDetailView(DetailView):
+    model = Cliente
+    template_name = 'tienda_online/clientes/cliente_detail.html'
+    context_object_name = 'cliente'
+
+
+class ClienteCreateView(CreateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'tienda_online/clientes/cliente_form.html'
+    success_url = reverse_lazy('cliente_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Cliente registrado exitosamente.")
+        return super().form_valid(form)
+
+
+class ClienteUpdateView(UpdateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'tienda_online/clientes/cliente_form.html'
+    success_url = reverse_lazy('cliente_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Datos del cliente actualizados correctamente.")
+        return super().form_valid(form)
+
+
+class ClienteDeleteView(DeleteView):
+    model = Cliente
+    template_name = 'tienda_online/clientes/cliente_confirm_delete.html'
+    success_url = reverse_lazy('cliente_list')
+    context_object_name = 'cliente'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Cliente eliminado correctamente.")
+        return super().delete(request, *args, **kwargs)
+
+
+# ==============================================================================
+# 5. CRUD CBV: Entidad PEDIDO (Evaluación 3 - Criterio 2)
+# ==============================================================================
+
+class PedidoListView(ListView):
+    model = Pedido
+    template_name = 'tienda_online/pedidos/pedido_list.html'
+    context_object_name = 'pedidos'
+    ordering = ['-fecha_pedido']
+
+
+class PedidoDetailView(DetailView):
+    model = Pedido
+    template_name = 'tienda_online/pedidos/pedido_detail.html'
+    context_object_name = 'pedido'
+
+
+class PedidoCreateView(CreateView):
+    model = Pedido
+    form_class = PedidoForm
+    template_name = 'tienda_online/pedidos/pedido_form.html'
+    success_url = reverse_lazy('pedido_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Pedido registrado exitosamente.")
+        return super().form_valid(form)
+
+
+class PedidoUpdateView(UpdateView):
+    model = Pedido
+    form_class = PedidoForm
+    template_name = 'tienda_online/pedidos/pedido_form.html'
+    success_url = reverse_lazy('pedido_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Pedido actualizado correctamente.")
+        return super().form_valid(form)
+
+
+class PedidoDeleteView(DeleteView):
+    model = Pedido
+    template_name = 'tienda_online/pedidos/pedido_confirm_delete.html'
+    success_url = reverse_lazy('pedido_list')
+    context_object_name = 'pedido'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Pedido eliminado correctamente.")
+        return super().delete(request, *args, **kwargs)
+
+
+# ==============================================================================
+# 6. Autenticación y Gestión de Sesiones
 # ==============================================================================
 
 def registro(request):
@@ -218,18 +371,12 @@ def registro(request):
 
 
 def logout_view(request):
-    """
-    Cierra la sesión del usuario y redirige al login.
-    """
     logout(request)
     return redirect('login')
 
 
 @login_required
 def vista_protegida(request):
-    """
-    Vista de demostración protegida con @login_required y uso de request.session.
-    """
     request.session['ultimo_acceso'] = 'Reciente'
     return render(request, 'tienda_online/vista_protegida.html', {
         'mensaje': 'Acceso autorizado al área protegida.',
@@ -238,7 +385,7 @@ def vista_protegida(request):
 
 
 # ==============================================================================
-# 5. Vistas Basadas en Clases (CBV) para DRF (Secciones 14-17)
+# 7. Vistas Basadas en Clases (CBV) para DRF (API REST Acumulativa)
 # ==============================================================================
 
 class CategoriaViewSet(viewsets.ModelViewSet):
