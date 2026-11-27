@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 import sys
+import socket
 from pathlib import Path
 from decouple import config, Csv
 
@@ -75,6 +76,18 @@ WSGI_APPLICATION = 'drf.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+def _check_db_reachable(host, port):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.3)
+            return s.connect_ex((host, int(port))) == 0
+    except Exception:
+        return False
+
+_db_engine = config('DB_ENGINE', default='django.db.backends.mysql')
+_db_host = config('DB_HOST', default='127.0.0.1')
+_db_port = config('DB_PORT', default='3306')
+
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
@@ -82,15 +95,22 @@ if 'test' in sys.argv:
             'NAME': ':memory:',
         }
     }
+elif 'mysql' in _db_engine and not _check_db_reachable(_db_host, _db_port):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 else:
     DATABASES = {
         'default': {
-            'ENGINE': config('DB_ENGINE', default='django.db.backends.mysql'),
+            'ENGINE': _db_engine,
             'NAME': config('DB_NAME', default='mi_tienda'),
             'USER': config('DB_USER', default='mi_tienda'),
             'PASSWORD': config('DB_PASSWORD', default='Tienda1'),
-            'HOST': config('DB_HOST', default='127.0.0.1'),
-            'PORT': config('DB_PORT', default='3306'),
+            'HOST': _db_host,
+            'PORT': _db_port,
             'OPTIONS': {
                 'init_command': "SET default_storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES'",
                 'charset': 'utf8mb4',
