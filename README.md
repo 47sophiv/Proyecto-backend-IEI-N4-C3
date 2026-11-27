@@ -173,6 +173,26 @@ IEI_N4_C3-main2/
 | `http://127.0.0.1:8000/admin/` | `admin.site.urls` | Panel de administración oficial de Django. |
 | `http://127.0.0.1:8000/404/` | `views.error_404` | Demostración de página no encontrada personalizada. |
 
+### CRUD mediante FBV
+Además de las CBV existentes, se incluye un CRUD mediante vistas basadas en funciones (FBV) para `Categoria`:
+
+| Operación | URL |
+| :--- | :--- |
+| Listar | `/fbv/categorias/` |
+| Crear | `/fbv/categorias/crear/` |
+| Detalle | `/fbv/categorias/<pk>/` |
+| Editar | `/fbv/categorias/<pk>/editar/` |
+| Eliminar | `/fbv/categorias/<pk>/eliminar/` |
+
+Todas las rutas CRUD y los endpoints API requieren autenticación.
+
+### Scripts separados de MySQL
+La configuración se puede reconstruir ejecutando estos archivos en orden:
+
+1. `sql_crear_base_datos.sql`
+2. `sql_crear_usuario.sql`
+3. `sql_asignar_permisos.sql`
+
 ---
 
 ## 5. Guía de Instalación y Puesta en Marcha

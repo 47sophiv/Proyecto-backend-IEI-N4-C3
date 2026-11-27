@@ -14,6 +14,13 @@ urlpatterns = [
     # 1. Página principal de bienvenida (Vista pública obligatoria)
     path('', views.bienvenida, name='bienvenida'),
 
+    # CRUD mediante vistas basadas en funciones (FBV)
+    path('fbv/categorias/', views.categoria_fbv_list, name='categoria_fbv_list'),
+    path('fbv/categorias/crear/', views.categoria_fbv_create, name='categoria_fbv_create'),
+    path('fbv/categorias/<int:pk>/', views.categoria_fbv_detail, name='categoria_fbv_detail'),
+    path('fbv/categorias/<int:pk>/editar/', views.categoria_fbv_update, name='categoria_fbv_update'),
+    path('fbv/categorias/<int:pk>/eliminar/', views.categoria_fbv_delete, name='categoria_fbv_delete'),
+
     # 2. CRUD CBV: PRODUCTOS (ListView, DetailView, CreateView, UpdateView, DeleteView)
     path('productos/', views.ProductoListView.as_view(), name='producto_list'),
     path('productos/crear/', views.ProductoCreateView.as_view(), name='producto_create'),

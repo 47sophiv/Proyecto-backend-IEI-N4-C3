@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from rest_framework import viewsets
@@ -127,24 +128,68 @@ def error_404(request, exception=None, *args, **kwargs):
     return render(request, '404.html', contexto, status=404)
 
 
+# CRUD mediante FBV (Funciones) para Categoria
+@login_required
+def categoria_fbv_list(request):
+    categorias = Categoria.objects.all().order_by('nombre')
+    return render(request, 'tienda_online/categorias/categoria_list.html', {'categorias': categorias})
+
+
+@login_required
+def categoria_fbv_detail(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    return render(request, 'tienda_online/categorias/categoria_detail.html', {'categoria': categoria})
+
+
+@login_required
+def categoria_fbv_create(request):
+    form = CategoriaForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, "Categoría creada mediante FBV.")
+        return redirect('categoria_fbv_list')
+    return render(request, 'tienda_online/categorias/categoria_form.html', {'form': form})
+
+
+@login_required
+def categoria_fbv_update(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    form = CategoriaForm(request.POST or None, instance=categoria)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, "Categoría actualizada mediante FBV.")
+        return redirect('categoria_fbv_detail', pk=categoria.pk)
+    return render(request, 'tienda_online/categorias/categoria_form.html', {'form': form})
+
+
+@login_required
+def categoria_fbv_delete(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == 'POST':
+        categoria.delete()
+        messages.success(request, "Categoría eliminada mediante FBV.")
+        return redirect('categoria_fbv_list')
+    return render(request, 'tienda_online/categorias/categoria_confirm_delete.html', {'categoria': categoria})
+
+
 # ==============================================================================
 # 2. CRUD CBV: Entidad PRODUCTO (Evaluación 3 - Criterio 2)
 # ==============================================================================
 
-class ProductoListView(ListView):
+class ProductoListView(LoginRequiredMixin, ListView):
     model = Producto
     template_name = 'tienda_online/productos/producto_list.html'
     context_object_name = 'object_list'
     ordering = ['-id']
 
 
-class ProductoDetailView(DetailView):
+class ProductoDetailView(LoginRequiredMixin, DetailView):
     model = Producto
     template_name = 'tienda_online/productos/producto_detail.html'
     context_object_name = 'producto'
 
 
-class ProductoCreateView(CreateView):
+class ProductoCreateView(LoginRequiredMixin, CreateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'tienda_online/productos/producto_form.html'
@@ -155,7 +200,7 @@ class ProductoCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductoUpdateView(UpdateView):
+class ProductoUpdateView(LoginRequiredMixin, UpdateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'tienda_online/productos/producto_form.html'
@@ -166,7 +211,7 @@ class ProductoUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ProductoDeleteView(DeleteView):
+class ProductoDeleteView(LoginRequiredMixin, DeleteView):
     model = Producto
     template_name = 'tienda_online/productos/producto_confirm_delete.html'
     success_url = reverse_lazy('producto_list')
@@ -177,7 +222,7 @@ class ProductoDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class CambiarEstadoView(UpdateView):
+class CambiarEstadoView(LoginRequiredMixin, UpdateView):
     """
     Acción rápida para cambiar el estado habilitado de un producto vía AJAX / POST.
     """
@@ -201,20 +246,20 @@ RegistroDeleteView = ProductoDeleteView
 # 3. CRUD CBV: Entidad CATEGORIA (Evaluación 3 - Criterio 2)
 # ==============================================================================
 
-class CategoriaListView(ListView):
+class CategoriaListView(LoginRequiredMixin, ListView):
     model = Categoria
     template_name = 'tienda_online/categorias/categoria_list.html'
     context_object_name = 'categorias'
     ordering = ['nombre']
 
 
-class CategoriaDetailView(DetailView):
+class CategoriaDetailView(LoginRequiredMixin, DetailView):
     model = Categoria
     template_name = 'tienda_online/categorias/categoria_detail.html'
     context_object_name = 'categoria'
 
 
-class CategoriaCreateView(CreateView):
+class CategoriaCreateView(LoginRequiredMixin, CreateView):
     model = Categoria
     form_class = CategoriaForm
     template_name = 'tienda_online/categorias/categoria_form.html'
@@ -225,7 +270,7 @@ class CategoriaCreateView(CreateView):
         return super().form_valid(form)
 
 
-class CategoriaUpdateView(UpdateView):
+class CategoriaUpdateView(LoginRequiredMixin, UpdateView):
     model = Categoria
     form_class = CategoriaForm
     template_name = 'tienda_online/categorias/categoria_form.html'
@@ -236,7 +281,7 @@ class CategoriaUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class CategoriaDeleteView(DeleteView):
+class CategoriaDeleteView(LoginRequiredMixin, DeleteView):
     model = Categoria
     template_name = 'tienda_online/categorias/categoria_confirm_delete.html'
     success_url = reverse_lazy('categoria_list')
@@ -251,20 +296,20 @@ class CategoriaDeleteView(DeleteView):
 # 4. CRUD CBV: Entidad CLIENTE (Evaluación 3 - Criterio 2)
 # ==============================================================================
 
-class ClienteListView(ListView):
+class ClienteListView(LoginRequiredMixin, ListView):
     model = Cliente
     template_name = 'tienda_online/clientes/cliente_list.html'
     context_object_name = 'clientes'
     ordering = ['-id']
 
 
-class ClienteDetailView(DetailView):
+class ClienteDetailView(LoginRequiredMixin, DetailView):
     model = Cliente
     template_name = 'tienda_online/clientes/cliente_detail.html'
     context_object_name = 'cliente'
 
 
-class ClienteCreateView(CreateView):
+class ClienteCreateView(LoginRequiredMixin, CreateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'tienda_online/clientes/cliente_form.html'
@@ -275,7 +320,7 @@ class ClienteCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ClienteUpdateView(UpdateView):
+class ClienteUpdateView(LoginRequiredMixin, UpdateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'tienda_online/clientes/cliente_form.html'
@@ -286,7 +331,7 @@ class ClienteUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ClienteDeleteView(DeleteView):
+class ClienteDeleteView(LoginRequiredMixin, DeleteView):
     model = Cliente
     template_name = 'tienda_online/clientes/cliente_confirm_delete.html'
     success_url = reverse_lazy('cliente_list')
@@ -301,20 +346,20 @@ class ClienteDeleteView(DeleteView):
 # 5. CRUD CBV: Entidad PEDIDO (Evaluación 3 - Criterio 2)
 # ==============================================================================
 
-class PedidoListView(ListView):
+class PedidoListView(LoginRequiredMixin, ListView):
     model = Pedido
     template_name = 'tienda_online/pedidos/pedido_list.html'
     context_object_name = 'pedidos'
     ordering = ['-fecha_pedido']
 
 
-class PedidoDetailView(DetailView):
+class PedidoDetailView(LoginRequiredMixin, DetailView):
     model = Pedido
     template_name = 'tienda_online/pedidos/pedido_detail.html'
     context_object_name = 'pedido'
 
 
-class PedidoCreateView(CreateView):
+class PedidoCreateView(LoginRequiredMixin, CreateView):
     model = Pedido
     form_class = PedidoForm
     template_name = 'tienda_online/pedidos/pedido_form.html'
@@ -325,7 +370,7 @@ class PedidoCreateView(CreateView):
         return super().form_valid(form)
 
 
-class PedidoUpdateView(UpdateView):
+class PedidoUpdateView(LoginRequiredMixin, UpdateView):
     model = Pedido
     form_class = PedidoForm
     template_name = 'tienda_online/pedidos/pedido_form.html'
@@ -336,7 +381,7 @@ class PedidoUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class PedidoDeleteView(DeleteView):
+class PedidoDeleteView(LoginRequiredMixin, DeleteView):
     model = Pedido
     template_name = 'tienda_online/pedidos/pedido_confirm_delete.html'
     success_url = reverse_lazy('pedido_list')

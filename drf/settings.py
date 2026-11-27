@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # Desacoplamiento de datos sensibles con python-decouple
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-rse-91g&c45)54g+0-q3^_$9@#^dg-g30@*fyur_xo&wk7cg!m')
+SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
@@ -106,9 +106,9 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': _db_engine,
-            'NAME': config('DB_NAME', default='mi_tienda'),
-            'USER': config('DB_USER', default='mi_tienda'),
-            'PASSWORD': config('DB_PASSWORD', default='Tienda1'),
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
             'HOST': _db_host,
             'PORT': _db_port,
             'OPTIONS': {
@@ -190,6 +190,9 @@ MAILERS = {
 # Configuración Global de Django REST Framework (Control de Fechas)
 # ==============================================================================
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',

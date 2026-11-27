@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from rest_framework.test import APIClient
 from .models import Categoria, Producto, Cliente, Pedido, DetallePedido
 from .forms import CategoriaForm, ProductoForm, ClienteForm, PedidoForm
 
@@ -125,6 +126,7 @@ class TiendaOnlineCBVTests(TestCase):
             total=Decimal("29990.00")
         )
         self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client.force_login(self.user)
 
     # --- Home & Auth ---
     def test_vista_bienvenida(self):
@@ -306,3 +308,63 @@ class TiendaOnlineCBVTests(TestCase):
         response_post = self.client.post(reverse('pedido_delete', kwargs={'pk': nuevo_ped.pk}))
         self.assertEqual(response_post.status_code, 302)
         self.assertFalse(Pedido.objects.filter(pk=nuevo_ped.pk).exists())
+
+
+class TiendaOnlineSecurityAndAPITests(TestCase):
+    def setUp(self):
+        self.categoria = Categoria.objects.create(nombre="API", descripcion="Prueba API")
+        self.user = User.objects.create_user(username="apiuser", password="password123")
+        self.api = APIClient()
+
+    def test_api_requires_authentication(self):
+        response = self.api.get('/api/categorias/')
+        self.assertIn(response.status_code, (401, 403))
+
+    def test_api_crud_categoria(self):
+        self.api.force_authenticate(user=self.user)
+
+        response = self.api.post('/api/categorias/', {
+            'nombre': 'Nueva categoría API',
+            'descripcion': 'Creada por POST',
+            'activo': True,
+        }, format='json')
+        self.assertEqual(response.status_code, 201)
+        categoria_id = response.data['id']
+
+        response = self.api.get(f'/api/categorias/{categoria_id}/')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.api.patch(f'/api/categorias/{categoria_id}/', {
+            'descripcion': 'Actualizada por PATCH',
+        }, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['descripcion'], 'Actualizada por PATCH')
+
+        response = self.api.delete(f'/api/categorias/{categoria_id}/')
+        self.assertEqual(response.status_code, 204)
+
+    def test_categoria_fbv_requires_login(self):
+        response = self.client.get(reverse('categoria_fbv_list'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_categoria_fbv_crud(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(reverse('categoria_fbv_create'), {
+            'nombre': 'Categoría FBV',
+            'descripcion': 'Creada por función',
+            'activo': True,
+        })
+        self.assertEqual(response.status_code, 302)
+        categoria = Categoria.objects.get(nombre='Categoría FBV')
+
+        response = self.client.post(reverse('categoria_fbv_update', kwargs={'pk': categoria.pk}), {
+            'nombre': 'Categoría FBV editada',
+            'descripcion': 'Editada por función',
+            'activo': True,
+        })
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.post(reverse('categoria_fbv_delete', kwargs={'pk': categoria.pk}))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Categoria.objects.filter(pk=categoria.pk).exists())
